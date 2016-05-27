@@ -68,19 +68,13 @@ vpath %.c $(PERIPH)/src
 vpath %.c $(DEVICE)
 vpath %.c $(U8GLIB)
 
-# Search path for Library
-#vpath %.c $(TEMPLATEROOT)/Library/ff9/src
-#vpath %.c $(TEMPLATEROOT)/Library/ff9/src/option
-#vpath %.c $(TEMPLATEROOT)/Library
 
 #  Processor specific
+#Note: Change the processor type to define the Proc. clock in the:
+#STM32F10x_StdPeriph_Lib_V3.5.0/Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/system_stm32f10x.c file which is eventually included.
 PTYPE = STM32F10X_MD
 #PTYPE = STM32F10X_MD_VL
-#TODO: Change the processor type. This defines the Proc. clock in the:
-#STM32F10x_StdPeriph_Lib_V3.5.0/Libraries/CMSIS/CM3/Device
-#Support/ST/STM32F10x/system_stm32f10x.c file which is eventually included.
 
-#LDSCRIPT = $(TEMPLATEROOT)/stm32f100.ld
 LDSCRIPT = stm32f103.ld
 
 # Compilation Flags
@@ -95,7 +89,7 @@ CFLAGS+= -D$(PTYPE) -DUSE_STDPERIPH_DRIVER $(FULLASSERT)
 CFLAGS+= -I$(U8GLIB) -I$(U8GFONT)
 #CFLAGS+= -I$(TEMPLATEROOT)/Library/ff9/src -I$(TEMPLATEROOT)/Library -I$(U8GLIB)
 
-OBJCOPYFLAGS = -O binary		   #AO!
+OBJCOPYFLAGS = -O binary
 
 # Build executable 
 
@@ -122,10 +116,6 @@ clean:
 debug: $(ELF)
 	arm-none-eabi-gdb $(ELF)
 
-
-# pull in dependencies
-
--include $(OBJS:.o=.d)
 
 
 
