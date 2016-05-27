@@ -11,3 +11,4 @@ The nice thing about this project is that the display can be easily connected to
 
 This is a sample code. It simply displays a few strings on the screen, and animates them. 
 
+The project requires that GCC ARM Embedded is installed, together with the ARM port of u8glib and its fonts. You should modify the Makefile to specify the respective tool locations. Specifically, the path to u8glib is specified in U8GLIB, and to the fonts directory in U8GFONT variables.
