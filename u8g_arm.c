@@ -17,7 +17,8 @@
 
 #define DELAY_TIM_FREQUENCY 1000000
 
-#define DATA_BUFFER_SIZE 500   //This worked.
+#define DATA_BUFFER_SIZE 120   //This worked.
+//#define DATA_BUFFER_SIZE 500
 //#define DATA_BUFFER_SIZE 1025
 //#define DATA_BUFFER_SIZE 2050
 #define SSD1306_ADDR 0x78      //Full 8 bit address, justified left.
@@ -86,8 +87,7 @@ void u8g_10MicroDelay(void){
 //*************************************************************************
 uint8_t u8g_com_hw_i2c_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_ptr) { 
   uint8_t buffer2[2];
-  uint8_t bufferDISP[DATA_BUFFER_SIZE];// TODO:This is quite large. 
-                                       // TODO:Check actual requirement!
+  uint8_t bufferDISP[DATA_BUFFER_SIZE];
 
   switch(msg){
   case U8G_COM_MSG_STOP:
@@ -97,14 +97,13 @@ uint8_t u8g_com_hw_i2c_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_pt
   case U8G_COM_MSG_INIT:
     //INIT HARDWARE INTERFACES, TIMERS, GPIOS...		
     //void I2C_LowLevel_Init(I2C_TypeDef* I2Cx, int ClockSpeed, int OwnAddress);
-    //    I2C_LowLevel_Init(I2C2, 40000, 0);
     I2C_LowLevel_Init(I2C2, 200000, 0);     //Works OK.
     delay_init();
     u8g_MicroDelay(); //By the book...
     break;
     
   case U8G_COM_MSG_ADDRESS:  
-    // define cmd (arg_val = 0) or data mode (arg_val = 1) 
+    // define cmd mode (arg_val = 0) or data mode (arg_val = 1) 
     if(arg_val == 0){
       control = 0;
     }else{
@@ -118,10 +117,9 @@ uint8_t u8g_com_hw_i2c_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_pt
     break;
     
   case U8G_COM_MSG_WRITE_BYTE:    //WRITE BYTE TO DEVICE
-    //LCD_OUT (arg_val, control);
 
     //This worked OK:    
-    buffer2[0]=control;                        //AO! Is this correct/
+    buffer2[0]=control;
     buffer2[1]=arg_val;
     I2C_Write(I2C2, buffer2, 2,  SSD1306_ADDR);
 
@@ -156,90 +154,4 @@ uint8_t u8g_com_hw_i2c_fn(u8g_t *u8g, uint8_t msg, uint8_t arg_val, void *arg_pt
 }
 
 
-//****************************************************************************
-//TODO: Remove this:
-/*
-void Delay_mss (void) {
-  uint32_t Sl;
-  for (Sl = 0; Sl < 0x5FFFFF; Sl++)
-    {
-    }
-}
-*/
 
-//****************************************************************************
-/*
-void I2C_StartTransmission(I2C_TypeDef* I2Cx, uint8_t transmissionDirection,uint8_t slaveAddress){
-  // Wait until I2C module is idle:
-  while(I2C_GetFlagStatus(I2Cx, I2C_FLAG_BUSY));
-
-  // Generate the start condition
-  I2C_GenerateSTART(I2Cx, ENABLE);
-  //
-  while(!I2C_CheckEvent(I2Cx, I2C_EVENT_MASTER_MODE_SELECT));
-
-  //Send the address of the slave to be contacted:
-  I2C_Send7bitAddress(I2Cx, slaveAddress<<1, transmissionDirection);
-  //If this is a write operation, set I2C for transmit
-  if(transmissionDirection== I2C_Direction_Transmitter){
-    while(!I2C_CheckEvent(I2Cx, I2C_EVENT_MASTER_TRANSMITTER_MODE_SELECTED));
-  }
-
-  //Or if a read operation, set i2C for receive
-  if(transmissionDirection== I2C_Direction_Receiver)
-    {
-      while(!I2C_CheckEvent(I2Cx, I2C_EVENT_MASTER_RECEIVER_MODE_SELECTED));
-    }
-}
-*/
-//****************************************************************************
-/*
-void I2C_WriteData(I2C_TypeDef* I2Cx, uint8_t data)
-{
-// Write the data on the bus
-I2C_SendData(I2Cx, data);
-//Wait until transmission is complete:
-while(!I2C_CheckEvent(I2Cx, I2C_EVENT_MASTER_BYTE_TRANSMITTED));
-}
-*/
-//****************************************************************************
-/*void LCD_OUT (uint8_t Data_LCD, uint8_t Np_LCD)
-{
-  I2C_Write(I2C2, Np_LCD, 1,  SSD1306_ADDR);
-  I2C_Write(I2C2, Data_LCD, 1,  SSD1306_ADDR);
-  //Status I2C_Write(I2C_TypeDef* I2Cx, const uint8_t* buf, uint32_t nbuf,  uint8_t SlaveAddress);
-
-}
-*/
-
-
-
-/*
-I bought a 4-wire OLED display (heltec).
-
-For arduino they made a modification in the u8glib : U8G_I2C_OPT_NO_ACK.
-
-(The device cannot send an ACK)
-
-I’m new to stm32 and have limited skills.
-
-I’m trying to adapt your script.
-
-in the configuration of the stm32
-I2C_InitStructure.I2C_Ack = I2C_Ack_Enable; //should I put here I2C_ACK_DISABLE ?
-
-In the code there is this line :
-while(!I2C_CheckEvent(I2C2, I2C_EVENT_MASTER_BYTE_TRANSMITTED));
-So the master is asking the OLED to confirm (=ack?)
-
-In the arduino equivalent, they skip the check. Can I do the same by leaving out (checkevent) ?
-
-(u8g_i2c_opt & U8G_I2C_OPT_NO_ACK){ 
-  // do not check for ACK
-}else{ 
-  status = TW_STATUS; // check status after sla 
-  if ( status != TW_MT_SLA_ACK ){ 
-    u8g_i2c_set_error(U8G_I2C_ERR_BUS, 2); 
-    return 0; 
-  }
-*/

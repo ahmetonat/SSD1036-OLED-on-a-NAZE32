@@ -56,14 +56,14 @@ void draw(int words)
   //xsprintf(array, "a=%03d",a); 
   //u8g_DrawStr(&u8g, 12, 56, array);
 
-  u8g_DrawRFrame(&u8g, 8,6,96,38,8);// (x,y,h,l,radius)
+  u8g_DrawRFrame(&u8g, 2,6,126,43,8);// (x,y,h,l,radius)
 
   if (words==1 || words==3){
-    u8g_DrawStr(&u8g, 12, 22, "Merhaba!");
+    u8g_DrawStr(&u8g, 7, 24, "SSD1306 OLED");
   }
 
   if (words==2 || words==3){
-    u8g_DrawStr(&u8g, 12, 36, "Ali, Zeynep");
+    u8g_DrawStr(&u8g, 18, 42, "STM32F103");
    }
   
   //u8g_DrawStr(&u8g, 2, 36, "Sizi Cok Seviyorum");
@@ -96,7 +96,9 @@ int main()
   
   init_LED_GPIO();
 
-  //u8g_InitComFn(&u8g, &u8g_dev_ssd1306_128x64_i2c, u8g_com_hw_i2c_fn);  
+  // Either use normal display driver (slower, small memory requirement:
+  //u8g_InitComFn(&u8g, &u8g_dev_ssd1306_128x64_i2c, u8g_com_hw_i2c_fn);
+  // or the 2x driver (faster, but more memory requirement.)
   u8g_InitComFn(&u8g, &u8g_dev_ssd1306_128x64_2x_i2c, u8g_com_hw_i2c_fn);  
   // See the bottom of file: u8g_dev_ssd1306_128x64.c
 
