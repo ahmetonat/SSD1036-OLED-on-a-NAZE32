@@ -66,7 +66,6 @@ void draw(int words)
     u8g_DrawStr(&u8g, 18, 42, "STM32F103");
    }
   
-  //u8g_DrawStr(&u8g, 2, 36, "Sizi Cok Seviyorum");
 }
 
 //******************************************************************
